@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr-BE">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#F5F5F7" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="AutoLux — réservez votre taxi premium à Bruxelles et vos transferts aéroport. Application de démonstration." />
+    <meta name="application-name" content="AutoLux" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="AutoLux" />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <!-- Demo only: never indexed, never competes with taxisautolux.be. -->
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <!--
+      Theme bootstrap — runs before the first paint so the right theme shows at once (no flash).
+      Appearance: ?theme=jour|nuit|auto (QA / presenter link: removed from the URL at once, kept in sessionStorage
+      "autolux-next:theme-param" until src/lib/theme.ts has persisted it as the setting)
+      → else the profile store (localStorage "autolux-next:profile" → state.settings.appearance) → else « jour ».
+      'auto' follows prefers-color-scheme. KEEP IN SYNC with THEME_CHROME in src/lib/theme.ts.
+    -->
+    <script>
+      (function () {
+        var d = document.documentElement, a = 'jour', t, c
+        var ok = function (v) { return v === 'jour' || v === 'nuit' || v === 'auto' }
+        try {
+          var k = 'autolux-next:theme-param', q = new URLSearchParams(location.search), p = q.get('theme')
+          if (p !== null) {
+            q.delete('theme')
+            var s = q.toString()
+            history.replaceState(history.state, '', location.pathname + (s ? '?' + s : '') + location.hash)
+            // Survives a reload that happens before the app could persist it (cold dev server, chunk retry).
+            if (ok(p)) try { sessionStorage.setItem(k, p) } catch (e) {}
+          } else {
+            try { p = sessionStorage.getItem(k) } catch (e) {}
+          }
+          if (ok(p)) { a = p; d.setAttribute('data-theme-param', p) }
+          else {
+            var j = JSON.parse(localStorage.getItem('autolux-next:profile') || 'null')
+            var v = j && j.state && j.state.settings && j.state.settings.appearance
+            if (ok(v)) a = v
+          }
+        } catch (e) {}
+        try { t = a === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'nuit' : 'jour') : a } catch (e) { t = 'jour' }
+        d.setAttribute('data-theme', t)
+        d.setAttribute('data-appearance', a)
+        c = t === 'nuit' ? ['#0B0A0A', 'dark', 'black-translucent'] : ['#F5F5F7', 'light', 'default']
+        var m = function (n, v) { var e = document.querySelector('meta[name="' + n + '"]'); if (e) e.setAttribute('content', v) }
+        m('theme-color', c[0])
+        m('color-scheme', c[1])
+        m('apple-mobile-web-app-status-bar-style', c[2])
+      })()
+    </script>
+    <!-- Paint the canvas colour before the stylesheet arrives; no rubber band / pull-to-refresh on the page itself. -->
+    <style>html{--lightningcss-light:initial;--lightningcss-dark: ;color-scheme:light;overscroll-behavior:none;background:#f5f5f7}html[data-theme=nuit]{--lightningcss-light: ;--lightningcss-dark:initial;color-scheme:dark;background:#0b0a0a}</style>
+    <link rel="preload" href="/autolux-next-demo/assets/manrope-latin-wght-normal-DHIcAJRg.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Map style + vector tiles: open the connection while the app bundle loads. -->
+    <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
+    <link rel="icon" type="image/svg+xml" href="/autolux-next-demo/icons/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/autolux-next-demo/icons/pwa-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/autolux-next-demo/icons/apple-touch-icon.png" />
+    <!-- iOS startup images (portrait). Jour (default theme): /splash/jour-iphone-*.png; Nuit: /splash/iphone-*.png
+         (assets-src/tools/build_icons.py). The script after the list points them at the theme on screen, so the
+         image iOS keeps when the app is added to the Home Screen matches what the user sees. -->
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1260x2736.png" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/autolux-next-demo/splash/jour-iphone-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <script>
+      (function () {
+        if (document.documentElement.getAttribute('data-theme') !== 'nuit') return
+        var l = document.querySelectorAll('link[rel="apple-touch-startup-image"]')
+        for (var i = 0; i < l.length; i++) l[i].setAttribute('href', l[i].getAttribute('href').replace('/splash/jour-', '/splash/'))
+      })()
+    </script>
+    <title>AutoLux</title>
+    <script type="module" crossorigin src="/autolux-next-demo/assets/index-y6khkWWF.js"></script>
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/rolldown-runtime-B0Z9INg1.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/vendor-react-Dma0kepV.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/vendor-motion-CXrKQvzM.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/vendor-icons-C03hzT0h.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/vendor-Bn9nDFEy.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/vendor-radix-Cr3W3fKm.js">
+    <link rel="stylesheet" crossorigin href="/autolux-next-demo/assets/index-C3CG3Vpj.css">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/HomePage-HHWuyNHi.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/simulation-BEtBoyFi.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/searchUrl-B1WfnTl_.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/RideOptionsSheet-BD9EXjHH.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/SaveFavoriteSheet-dovdp5nE.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/places-BSZP-6x6.js">
+    <link rel="modulepreload" crossorigin href="/autolux-next-demo/assets/keyboardPrimer-BHxAwU8F.js">
+  <link rel="manifest" href="/autolux-next-demo/manifest.webmanifest"></head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

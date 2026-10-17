@@ -1,0 +1,1 @@
+function e(e){let t=document.createElement(`a`);t.href=e,e.startsWith(`http`)&&(t.target=`_blank`,t.rel=`noopener noreferrer`),t.click()}export{e as t};

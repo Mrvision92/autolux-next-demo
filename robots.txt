@@ -1,0 +1,5 @@
+# AutoLux Next — application de démonstration, à ne pas indexer.
+# L’exploration reste permise afin que les robots lisent la consigne « noindex »
+# (balise meta robots + en-tête X-Robots-Tag) ; un « Disallow » la masquerait.
+User-agent: *
+Allow: /

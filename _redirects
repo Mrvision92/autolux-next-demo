@@ -1,0 +1,3 @@
+# Netlify / Cloudflare Pages: every app route (/reserver, /course/…, /compte/…) is served by the SPA shell.
+# Real files (assets, sw.js, manifest, icons) are matched first and never rewritten.
+/*    /index.html    200
